@@ -1,0 +1,140 @@
+[{
+  "_id": {
+    "$oid": "62ab2497edeaa075a91b97d5"
+  },
+  "title": "Titulo Prueba",
+  "users": [
+    "62a8a384b4bc932fe7640068",
+    "62a9e5af4d16506c55eeafbe",
+    "62ab1a7ab0d1f8b7cee3db08"
+  ],
+  "state": "En proceso",
+  "data": [
+    "dato1",
+    "dato2",
+    "dato3"
+  ],
+  "template": {
+    "_id": "",
+    "title": "template prueba doc",
+    "text": "esto es un text de prueba de doc",
+    "values": [
+      "valor1",
+      "valor2"
+    ],
+    "extras": [
+      "clausula1",
+      "clausula2"
+    ]
+  },
+  "id": "62ab2497edeaa075a91b97d5"
+},{
+  "_id": {
+    "$oid": "62ab392e7b34a367bb9d7d3d"
+  },
+  "title": "Documento Prueba Crear",
+  "users": [
+    "62a8a384b4bc932fe7640068",
+    "62a9e5af4d16506c55eeafbe"
+  ],
+  "state": "Aprobado",
+  "data": [
+    "dato1",
+    "dato2",
+    "dato3"
+  ],
+  "template": {
+    "_id": "",
+    "title": "template prueba doc",
+    "text": "esto es un text de prueba de doc",
+    "values": [
+      "valor1",
+      "valor2"
+    ],
+    "extras": [
+      "clausula1",
+      "clausula2"
+    ]
+  }
+},{
+  "_id": {
+    "$oid": "62ab3c3cc95a2a5de0264146"
+  },
+  "title": "Documento Prueba 1",
+  "users": [
+    "62a8a384b4bc932fe7640068"
+  ],
+  "state": "En proceso",
+  "data": [
+    "dato1",
+    "dato2",
+    "dato3"
+  ],
+  "template": {
+    "_id": "",
+    "title": "template prueba doc",
+    "text": "esto es un text de prueba de doc",
+    "values": [
+      "valor1",
+      "valor2"
+    ],
+    "extras": [
+      "clausula1",
+      "clausula2"
+    ]
+  }
+},{
+  "_id": {
+    "$oid": "62ab3c40c95a2a5de0264147"
+  },
+  "title": "Documento Prueba 2",
+  "users": [
+    "62a8a384b4bc932fe7640068"
+  ],
+  "state": "En proceso",
+  "data": [
+    "dato1",
+    "dato2",
+    "dato3"
+  ],
+  "template": {
+    "_id": "",
+    "title": "template prueba doc",
+    "text": "esto es un text de prueba de doc",
+    "values": [
+      "valor1",
+      "valor2"
+    ],
+    "extras": [
+      "clausula1",
+      "clausula2"
+    ]
+  }
+},{
+  "_id": {
+    "$oid": "62ab3c43c95a2a5de0264148"
+  },
+  "title": "Documento Prueba 3",
+  "users": [
+    "62a8a384b4bc932fe7640068"
+  ],
+  "state": "En proceso",
+  "data": [
+    "dato1",
+    "dato2",
+    "dato3"
+  ],
+  "template": {
+    "_id": "",
+    "title": "template prueba doc",
+    "text": "esto es un text de prueba de doc",
+    "values": [
+      "valor1",
+      "valor2"
+    ],
+    "extras": [
+      "clausula1",
+      "clausula2"
+    ]
+  }
+}]

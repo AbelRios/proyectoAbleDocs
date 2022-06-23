@@ -1,0 +1,33 @@
+[{
+  "_id": {
+    "$oid": "62a8a384b4bc932fe7640068"
+  },
+  "name": "Abel Rios",
+  "email": "abel@mail.com",
+  "password": "81dc9bdb52d04dc20036dbd8313ed055",
+  "roles": [1990, 1984]
+},{
+  "_id": {
+    "$oid": "62a9e5af4d16506c55eeafbe"
+  },
+  "name": "Jaime Lopez",
+  "email": "jaimelopez@mail.com",
+  "password": "4a7d1ed414474e4033ac29ccb8653d9b",
+  "roles": [1984]
+},{
+  "_id": {
+    "$oid": "62aa052926315edbc3395828"
+  },
+  "name": "Luisa Perez",
+  "email": "luisaperez@mail.com",
+  "password": "b59c67bf196a4758191e42f76670ceba",
+  "roles": [1984]
+},{
+  "_id": {
+    "$oid": "62ab1a7ab0d1f8b7cee3db08"
+  },
+  "name": "Martin Martinez",
+  "email": "martin@mail.com",
+  "password": "81dc9bdb52d04dc20036dbd8313ed055",
+  "roles": [1984]
+}]

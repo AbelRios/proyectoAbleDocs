@@ -1,0 +1,16 @@
+[{
+  "_id": {
+    "$oid": "62a9c7d3400a8cfa9ca89fb1"
+  },
+  "title": "Plantilla de Prueba",
+  "text": "Esto es una plantilla de contrato",
+  "extras": [
+    "clausula1",
+    "clausula2"
+  ],
+  "values": [
+    "valor1",
+    "valor2",
+    "valor3"
+  ]
+}]

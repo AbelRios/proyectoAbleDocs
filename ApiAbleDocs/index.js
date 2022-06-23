@@ -17,9 +17,17 @@ MongoClient.connect("mongodb://localhost:27017/", (err, client) => {
     });
 });
 
+//  <------------- Datos Auxiliares para la API ------------->
+
+const baseNotification = {
+
+}
+
+
+
 //  <------------- Funciones Auxiliares para la API ------------->
 
-function validarEmail(email) {
+function validateEmail(email) {
 
     let result = false;
 
@@ -31,14 +39,13 @@ function validarEmail(email) {
 }
 
 // Con un JWT nos devuelve true si es admin y false si es usuario
-
-function esAdmin(token) {
+function isAdmin(token) {
 
     let result = false;
 
     const decoded = jwt.verify(token, "releevant");
 
-    if (decoded.rol === "admin") {
+    if (decoded.roles.includes(1990)) {
         result = true;
     }
     return result;
@@ -47,27 +54,25 @@ function esAdmin(token) {
 // Función que desencripta el token y devuelve el id del usuario
 function idToken(token) {
 
-    let result;
-
     const decoded = jwt.verify(token, "releevant");
 
-    if (decoded.rol === "admin") {
-        result = true;
-    }
-    return result;
+    return decoded.id;
 }
 
+//  <------------- Endpoints de la API ------------->
 
 //  Endpoint para: creación de nuevo usuario
-//  Parametros necesarios: nombre, email, password
+//  Parametros necesarios: name, email, password
 //  Observaciones: 
 //      Asignamos directamente el rol a "usuario" hardcodeado
 
-app.post("/nuevousuario", async function (request, response) {
+app.post("/newuser", async function (request, response) {
 
     let database = db.db("bdabledocs");
 
-    request.body.rol = "usuario";
+    request.body.roles = [1984];
+
+    // Aquí insertar notificación base
 
     md5.string.quiet(request.body.password, function (err, md5) {
         if (err) {
@@ -78,16 +83,16 @@ app.post("/nuevousuario", async function (request, response) {
         }
     })
 
-    if (validarEmail(request.body.email)) {
-        await database.collection("usuarios").insertOne(request.body, function (err, res) {
+    if (validateEmail(request.body.email)) {
+        await database.collection("users").insertOne(request.body, function (err, res) {
             if (!res) {
-                response.status(500).send("Error Inesperado. No se ha podido borrar el usuario.");
+                response.status(500).send("Unespected Error. Could not create user.");
             } else {
-                response.status(200).send("Usuario registrado correctamente");
+                response.status(200).send("User registered correctly.");
             }
         });
     } else {
-        response.status(400).send("Email no valido");
+        response.status(400).send("Email not valid");
     }
 });
 
@@ -95,20 +100,20 @@ app.post("/nuevousuario", async function (request, response) {
 //  Parametros necesarios: ObjectId del usuario
 //  Observaciones: 
 
-app.delete("/eliminarusuario", async function (request, response) {
+app.delete("/deleteuser", async function (request, response) {
 
     let database = db.db("bdabledocs");
 
-    await database.collection("usuarios").findOne({ _id: { $eq: ObjectId(request.body.id) } }, async function (err, result) {
+    await database.collection("users").findOne({ _id: { $eq: ObjectId(request.body.id) } }, async function (err, result) {
         if (!result) {
-            response.status(404).send("Usuario no existe");
+            response.status(404).send("User does not exist.");
         } else {
-            await database.collection("usuarios").deleteOne(
+            await database.collection("users").deleteOne(
                 { _id: ObjectId(request.body.id) }, function (err, res) {
                     if (!res) {
-                        response.status(500).send("Error Inesperado. No se ha podido borrar el usuario.");
+                        response.status(500).send("Unexpected error. Could not delete user.");
                     } else {
-                        response.status(200).send("Usuario eliminado correctamente");
+                        response.status(200).send("User deleted correctly.");
                     }
                 }
             );
@@ -119,10 +124,10 @@ app.delete("/eliminarusuario", async function (request, response) {
 //  Endpoint para: login de usuario
 //  Parametros necesarios:  email de usuario, password
 //  Observaciones: 
-//      el token generado devuelve: id, nombre de usuario y rol. 
+//      el token generado devuelve: id, name de usuario y rol. 
 //      el token expira en 6 horas
 //      Este token lo guardaremos en el context del front end para pasarlo a los endpoints que nuestros componentes 
-//          necesiten como por ejemplo el listado de documentos del usuario, el listado de plantillas, etc. 
+//          necesiten como por ejemplo el listado de documents del usuario, el listado de templates, etc. 
 //          y para el logout lo borraremos del context
 
 app.post("/login", async function (request, response) {
@@ -135,16 +140,16 @@ app.post("/login", async function (request, response) {
         }
         else {
             request.body.password = md5;
-            await database.collection("usuarios").findOne({ email: { $eq: request.body.email } },
+            await database.collection("users").findOne({ email: { $eq: request.body.email } },
                 function (err, result) {
                     if (!result) {
-                        response.status(404).send("Usuario no existe");
+                        response.status(404).send("User does not exist.");
                     } else {
                         if (request.body.password === result.password) {
-                            const accessToken = jwt.sign({ id: result._id, nombre: result.nombre, rol: result.rol }, "releevant", { expiresIn: '6h' });
+                            const accessToken = jwt.sign({ id: result._id, name: result.name, roles: result.roles }, "releevant", { expiresIn: '6h' });
                             response.status(200).send(accessToken);
                         } else {
-                            response.status(401).send("Password no valida.")
+                            response.status(401).send("Password not valid.")
                         }
                     }
                 })
@@ -164,8 +169,8 @@ app.get("/checktoken", (request, response) => {
 
     const decoded = jwt.verify(token, "releevant");
 
-    if (!token || !decoded.nombre) {
-        response.status(401).send("Token No Válido")
+    if (!token || !decoded.name) {
+        response.status(401).send("Token Not Valid")
     } else {
         result = decoded;
     }
@@ -173,141 +178,141 @@ app.get("/checktoken", (request, response) => {
     response.json(result)
 })
 
-//  Endpoint para: hacer un get del listado de usuarios
+//  Endpoint para: hacer un get del listado de users
 //  Parametros necesarios:  ninguno
-//  Observaciones: devuelve un array con todos los usuarios de la tabla usuarios
+//  Observaciones: devuelve un array con todos los users de la tabla users
 
-app.get("/listadousuarios", async function (request, response) {
+app.get("/userslist", async function (request, response) {
 
     let database = db.db("bdabledocs");
 
-    await database.collection("usuarios").find().toArray((err, results) => {
+    await database.collection("users").find().toArray((err, results) => {
         if (err) throw err;
         response.status(200).send(results);
     });
 });
 
-//  Endpoint para: Obtener/Crear/Modificar/Eliminar una plantilla
-//  Parametros necesarios: Objeto Plantilla (id, titulo, texto, valores a rellenar, clausulas)
+//  Endpoint para: Obtener/Crear/Modificar/Eliminar una template
+//  Parametros necesarios: Objeto template (id, titulo, texto, valores a rellenar, clausulas)
 //  Observaciones: ten en cuenta que los datos los recoge el front, aquí debe llegar todos los datos y tendremos que 
 //  asegurarnos de que NO nos vienen campos necesarios vacíos. 
 //  No vamos a tener que llamar al 'crearnuevaclausula' puesto que esos datos ya vienen del front.
-//  OJO: el put me genera un segundo campo id en el objeto plantilla, podría solucionarse pasando el id por params en lugar de por el body.
+//  OJO: el put me genera un segundo campo id en el objeto template, podría solucionarse pasando el id por params en lugar de por el body.
 
-// El get necesita pasarle el id de la plantilla
-app.get("/plantilla", async function (request, response) {
+// El get necesita pasarle el id de la template
+app.get("/template", async function (request, response) {
 
     let database = db.db("bdabledocs");
 
-    await database.collection("plantillas").findOne({ _id: { $eq: ObjectId(request.body.id) } }, function (err, result) {
+    await database.collection("templates").findOne({ _id: { $eq: ObjectId(request.body.id)}}, function (err, result) {
         if (!result) {
-            response.status(404).send("Plantilla no existe");
+            response.status(404).send("template does not exist");
         } else {
             response.status(200).send(result);
         }
     })
 });
 
-// Post necesita el cuerpo de la plantilla por el body
-app.post("/plantilla", async function (request, response) {
+// Post necesita el cuerpo de la template por el body
+app.post("/template", async function (request, response) {
 
     let database = db.db("bdabledocs");
 
     const authorization = request.get("authorization");
 
     if (!authorization) {
-        response.status(401).send("Autorización requerida");
+        response.status(401).send("authorization required");
     } else {
 
-        if (esAdmin(authorization)) {
+        if (isAdmin(authorization)) {
 
-            await database.collection("plantillas").insertOne(request.body,
+            await database.collection("templates").insertOne(request.body,
                 function (err, res) {
                     if (!res) {
-                        response.status(500).send("Error Inesperado. No se ha podido crear nueva plantilla.");
+                        response.status(500).send("Unexpected error. Could not create new template.");
                     } else {
-                        response.status(200).send("Plantilla registrada correctamente");
+                        response.status(200).send("template registered correctly");
                     }
                 })
 
         } else {
-            response.status(403).send("Usuario no autorizado");
+            response.status(403).send("User not authorized");
         }
     }
 });
 
-// Put necesita en el body los datos a modificar + el id de la plantilla
-app.put("/plantilla", async function (request, response) {
+// Put necesita en el body los datos a modificar + el id de la template
+app.put("/template", async function (request, response) {
 
     let database = db.db("bdabledocs");
 
     const authorization = request.get("authorization");
 
     if (!authorization) {
-        response.status(401).send("Autorización requerida");
+        response.status(401).send("Authorization required");
     } else {
 
-        if (esAdmin(authorization)) {
+        if (isAdmin(authorization)) {
 
-            await database.collection("plantillas").updateOne(
+            await database.collection("templates").updateOne(
                 { _id: { $eq: ObjectId(request.body.id) } },
                 { $set: request.body },
                 function (err, res) {
                     if (!res) {
-                        response.status(404).send("Plantilla no existe")
+                        response.status(404).send("template does not exist")
                     } else {
-                        response.status(200).send("Plantilla modificada con éxito")
+                        response.status(200).send("template modified successfully")
                     }
                 })
 
         } else {
-            response.status(403).send("Usuario no autorizado");
+            response.status(403).send("User not authorized");
         }
     }
 });
 
-// Delete necesita el id de la plantilla
-app.delete("/plantilla", async function (request, response) {
+// Delete necesita el id de la template
+app.delete("/template", async function (request, response) {
 
     let database = db.db("bdabledocs");
 
     const authorization = request.get("authorization");
 
     if (!authorization) {
-        response.status(401).send("Autorización requerida");
+        response.status(401).send("Authorization required");
     } else {
-        if (esAdmin(authorization)) {
+        if (isAdmin(authorization)) {
 
-            await database.collection("plantillas").deleteOne(
+            await database.collection("templates").deleteOne(
                 { _id: { $eq: ObjectId(request.body.id) } },
                 function (err, res) {
                     if (!res) {
-                        response.status(404).send("Plantilla no existe")
+                        response.status(404).send("template does not exist")
                     } else {
-                        response.status(200).send("Plantilla eliminada con éxito")
+                        response.status(200).send("template deleted successfully")
                     }
                 })
 
         } else {
-            response.status(403).send("Usuario no autorizado");
+            response.status(403).send("User not authorized");
         }
     }
 
 });
 
-//  Endpoint para: Get/Post/Put/Delete Documento
+//  Endpoint para: Get/Post/Put/Delete document
 //  Parametros necesarios: token de usuario, id del doc, titulo, 
 //  Observaciones:
 
-//Get necesita el id del documento
-app.get("/documento", async function (request, response) {
+//Get necesita el id del document
+app.get("/document", async function (request, response) {
 
     let database = db.db("bdabledocs");
 
-    await database.collection("documentos").findOne({ _id: { $eq: ObjectId(request.body.id) } },
+    await database.collection("documents").findOne({ _id: { $eq: ObjectId(request.body.id) } },
         function (err, result) {
             if (!result) {
-                response.status(404).send("Documento no existe");
+                response.status(404).send("Document does not exist");
             } else {
                 response.status(200).send(result);
             }
@@ -315,102 +320,103 @@ app.get("/documento", async function (request, response) {
 
 });
 
-// Post necesita los campos del documento en el body de la request
-// ***** Habrá que modificarlo, para que reciba el token del usuario e ingrese en el array de usuarios ese id
-//       además, habrá que coger la plantilla y copiarla y meterla en la propiedad plantilla del documento
-app.post("/documento", async function (request, response) {
+// Post necesita los campos del document en el body de la request
+// ***** Habrá que modificarlo, para que reciba el token del usuario e ingrese en el array de users ese id
+//       además, habrá que coger la template y copiarla y meterla en la propiedad template del document
+app.post("/document", async function (request, response) {
 
     let database = db.db("bdabledocs");
 
-    await database.collection("documentos").insertOne(request.body, function (err, res) {
+    await database.collection("documents").insertOne(request.body, function (err, res) {
         if (!res) {
-            response.status(500).send("Error Inesperado. No se ha podido crear nuevo documento.");
+            response.status(500).send("Unexpected error. Could not create new document.");
         } else {
-            response.status(200).send("Documento registrado correctamente");
+            response.status(200).send("document registered correctly.");
         }
     })
 });
 
-app.put("/documento", async function (request, response) {
+//Aqui habría que chequear que el usuario que está modificando el document sea uno de los que tienen el doc asignado
+app.put("/document", async function (request, response) {
 
     let database = db.db("bdabledocs");
 
-    await database.collection("documentos").updateOne(
+    await database.collection("documents").updateOne(
         { _id: { $eq: ObjectId(request.body.id) } },
         { $set: request.body },
         function (err, res) {
             if (!res) {
-                response.status(404).send("Documento no existe")
+                response.status(404).send("document does not exist")
             } else {
-                response.status(200).send("Documento modificado con éxito")
+                response.status(200).send("document updated successfully")
             }
         })
 });
 
-app.delete("/documento", async function (request, response) {
+app.delete("/document", async function (request, response) {
 
     let database = db.db("bdabledocs");
 
     const authorization = request.get("authorization");
     if (!authorization) {
-        response.status(401).send("Autorización requerida");
+        response.status(401).send("authorization required");
     } else {
-        if (esAdmin(authorization)) {
+        if (isAdmin(authorization)) {
 
-            await database.collection("documentos").deleteOne(
+            await database.collection("documents").deleteOne(
                 { _id: { $eq: ObjectId(request.body.id) } },
                 function (err, res) {
                     if (!res) {
-                        response.status(404).send("Documento no existe")
+                        response.status(404).send("document does not exist")
                     } else {
-                        response.status(200).send("Documento eliminado con éxito")
+                        response.status(200).send("document deleted successfully")
                     }
                 })
         } else {
-            response.status(403).send("Usuario no autorizado");
+            response.status(403).send("User not authorized");
         }
     }
 });
 
-//  Endpoint para: listar todos los documentos de un usuario
+//  Endpoint para: listar todos los documents de un usuario
 //  Parametros necesarios:  id del usuario
 //  Observaciones:
 
-app.get("/listadousuariodoc", async function (request, response) {
+app.get("/listdocumentsuser", async function (request, response) {
 
     let database = db.db("bdabledocs");
 
-    await database.collection("documentos").find({ usuarios: request.body.id }).toArray((err, results) => {
+    await database.collection("documents").find({ users: request.body.id }).toArray((err, results) => {
         if (!results) {
-            response.status(404).send("No hay documentos asignados al usuario")
+            response.status(404).send("No documents assigned to user")
         } else {
             response.status(200).send(results);
         }
     });
 });
 
-//  Endpoint para: listar las plantillas    
+//  Endpoint para: listar las templates    
 //  Parametros necesarios: 
 //  Observaciones:
 
-app.get("/listadoplantillas", async function (request, response) {
+app.get("/listalltemplates", async function (request, response) {
 
     let database = db.db("bdabledocs");
 
-    await database.collection("plantillas").find().toArray((err, res) => {
+    await database.collection("templates").find().toArray((err, res) => {
         if (!res) {
-            response.status(404).send("No hay plantillas")
+            response.status(404).send("There is no templates")
         } else {
             response.status(200).send(res);
         }
     });
 });
 
-//  Endpoint para: asignar un usuario a un documento (admin)
-//  Parametros necesarios: id usuario, id documento
+//  Endpoint para: asignar un usuario a un document (admin)
+//  Parametros necesarios: id user, id document
 //  Observaciones:
 
-app.put("/asignarusuario", async function (request, response) {
+app.put("/assignuser", async function (request, response) {
 
     let database = db.db("bdabledocs");
 
@@ -418,35 +424,156 @@ app.put("/asignarusuario", async function (request, response) {
 
     if (!authorization) {
 
-        response.status(401).send("Autorización requerida");
+        response.status(401).send("Authorization required");
 
     } else {
 
-        if (esAdmin(authorization)) {
+        if (isAdmin(authorization)) {
 
-            await database.collection("documentos").findOne({ _id: { $eq: ObjectId(request.body.idDocumento) }},
+            await database.collection("documents").findOne({ _id: { $eq: ObjectId(request.body.idDocument) } },
                 function (err, result) {
                     if (!result) {
-                        response.status(404).send("Documento no existe");
+                        response.status(404).send("document does not exist");
                     } else {
                         let aux = result;
 
-                        aux.usuarios.push(request.body.idUsuario);
+                        aux.users.push(request.body.idUser);
 
-                        database.collection("documentos").updateOne(
-                            { _id: { $eq: ObjectId(request.body.idDocumento) } },
+                        database.collection("documents").updateOne(
+                            { _id: { $eq: ObjectId(request.body.idDocument) } },
                             { $set: aux },
                             function (err, res) {
-                                response.status(200).send("Usuario asignado con éxito")
+                                response.status(200).send("User assigned successfully")
                             })
                     }
                 })
         } else {
-            response.status(403).send("Usuario no autorizado");
+            response.status(403).send("User not authorized");
         }
     }
 });
 
+//  Endpoint para: modificar state del document a "para revisar"
+//  Parametros necesarios: id del document
+//  Observaciones:
+
+app.put("/statelookover", async function (request, response) {
+
+    let database = db.db("bdabledocs");
+
+    await database.collection("documents").findOne({ _id: { $eq: ObjectId(request.body.idDocument) } },
+        function (error, result) {
+            if (!result) {
+                response.status(404).send("document does not exist");
+            } else {
+                let aux = result;
+
+                aux.state="Para revisar";
+
+                database.collection("documents").updateOne(
+                    { _id: { $eq: ObjectId(request.body.idDocument) } },
+                    { $set: aux },
+                    function (err, res) {
+                        response.status(200).send("document updated successfully")
+                    })
+            }
+        })
+});
+
+//  Endpoint para: cambiar el state de un document a "aprobado"
+//  Parametros necesarios: token del usuario, id del document
+//  Observaciones: sólo el admin puede hacer ésto
+
+app.put("/stateapproved", async function (request, response){
+
+    let database = db.db("bdabledocs");
+
+    const authorization = request.get("authorization");
+
+    if (!authorization) {
+
+        response.status(401).send("Authorization required");
+
+    } else {
+
+        if (isAdmin(authorization)) {
+
+            await database.collection("documents").findOne({ _id: { $eq: ObjectId(request.body.idDocument) } },
+                function (err, result) {
+                    if (!result) {
+                        response.status(404).send("document does not exist");
+                    } else {
+                        let aux = result;
+
+                        aux.state="Aprobado";
+
+                        database.collection("documents").updateOne(
+                            { _id: { $eq: ObjectId(request.body.idDocument) } },
+                            { $set: aux },
+                            function (err, res) {
+                                response.status(200).send("document updated successfully")
+                            })
+                    }
+                })
+        } else {
+            response.status(403).send("User not authorized");
+        }
+    }
+});
+
+//  Endpoint para: CRUD de cláusulas de las templates
+//  Parametros necesarios:  token identificación usuario, id de la template,  body de la template (titulo, texto, valores a rellenar)
+//  Observaciones: 
+//      - en principio tenia pensado poder añadir las clausulas en el momento de la creación de la template
+//      pero creo que es mejor (más fácil por ahora) añadirlas una a una cuando la template ya está creada.
+
+// Necesita idtemplate y el body de la clausula (titulo, texto, valores a rellenar[])
+// app.post("/clausula", async function (request, response){
+
+//     let database = db.db("bdabledocs");
+
+//     const authorization = request.get("authorization");
+
+//     if (!authorization) {
+
+//         response.status(401).send("Autorización requerida");
+
+//     } else {
+
+//         if (isAdmin(authorization)) {
+
+//             await database.collection("templates").findOne({ _id: { $eq: ObjectId(request.body.idtemplate) } },
+//                 function (err, result) {
+//                     if (!result) {
+//                         response.status(404).send("template no existe");
+//                     } else {
+
+//                         let aux = result;
+
+//                         let nuevaClausula = {
+//                             titulo: request.body.titulo,
+//                             texto: request.body.texto,
+//                             valores: request.body.valores
+//                         }
+
+//                         aux.clausulas.push(nuevaClausula);
+                    
+                        
+//                     }
+//                 })
+//             }
+//         }
+// });
+
+// app.put("/clausula", async function (request, response){
+
+//     let database = db.db("bdabledocs");
+// });
+
+// app.delete("/clausula", async function (request, response){
+
+//     let database = db.db("bdabledocs");
+// });
 
 
 // ** NOTA ** Un endpoint es la URL o ruta, pero puede tener distintos métodos (get, post, put, delete) con distintas
