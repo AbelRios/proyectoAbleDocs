@@ -1,0 +1,7 @@
+export const LAYOUT = "/"
+export const HOME = "/home"
+export const LOGIN = "/login"
+export const EDITOR = "/editor"
+export const LOGOUT = "/logout"
+export const ADMIN_PANEL = "/admin"
+export const USER_PANEL = "/user"

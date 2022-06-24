@@ -147,7 +147,8 @@ app.post("/login", async function (request, response) {
                     } else {
                         if (request.body.password === result.password) {
                             const accessToken = jwt.sign({ id: result._id, name: result.name, roles: result.roles }, "releevant", { expiresIn: '6h' });
-                            response.status(200).send(accessToken);
+                            result.token = accessToken;
+                            response.status(200).send(result);
                         } else {
                             response.status(401).send("Password not valid.")
                         }
