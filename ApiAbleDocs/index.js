@@ -1,9 +1,11 @@
 const { response } = require('express');
 const express = require('express');
+const cors = require("cors");
 const { ObjectId } = require("mongodb");
 const md5 = require("nodejs-md5");
 const jwt = require('jsonwebtoken');
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 let db = null;
@@ -147,8 +149,8 @@ app.post("/login", async function (request, response) {
                     } else {
                         if (request.body.password === result.password) {
                             const accessToken = jwt.sign({ id: result._id, name: result.name, roles: result.roles }, "releevant", { expiresIn: '6h' });
-                            result.token = accessToken;
-                            response.status(200).send(result);
+                            let token = {token: accessToken};
+                            response.status(200).send(token);
                         } else {
                             response.status(401).send("Password not valid.")
                         }

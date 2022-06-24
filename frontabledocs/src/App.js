@@ -1,4 +1,7 @@
 import './App.css';
+import "bootstrap/dist/css/bootstrap.min.css"
+
+import AuthContextProvider from './contexts/AuthContext';
 
 import Layout from "./components/Layout";
 import AdminPanel from "./views/AdminPanel";
@@ -15,19 +18,21 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path={LAYOUT} element={<Layout />}>
-          <Route index element={<CheckToken/>}/>
-          <Route path={LOGIN} element={<Login />} />
-          <Route path={HOME} element={<Home />} />
-          <Route path={EDITOR} element={<Editor />} />
-          <Route path={ADMIN_PANEL} element={<AdminPanel />} />
-          <Route path={USER_PANEL} element={<UserPanel />} />
-          <Route path={LOGOUT} element={<Logout />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <AuthContextProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path={LAYOUT} element={<Layout />}>
+            <Route index element={<Login />} />
+            {/* <Route path={LOGIN} element={<Login />} /> */}
+            <Route path={HOME} element={<Home />} />
+            <Route path={EDITOR} element={<Editor />} />
+            <Route path={ADMIN_PANEL} element={<AdminPanel />} />
+            <Route path={USER_PANEL} element={<UserPanel />} />
+            <Route path={LOGOUT} element={<Logout />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </AuthContextProvider>
   );
 }
 

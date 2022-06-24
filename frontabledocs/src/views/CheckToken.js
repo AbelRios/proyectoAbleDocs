@@ -3,32 +3,31 @@ import jwt_decode from "jwt-decode";
 
 export default function CheckToken() {
 
-    const[data, setData] = useState("");
+    const [data, setData] = useState("");
 
-    function handleInput(e){
+    function handleInput(e) {
+        e.preventDefault();
         setData(e.target.value);
+        console.log(data);
     }
 
-    function handleSubmit(e){
-        e.preventDefault();
+    function handleSubmit(event) {
+        event.preventDefault();
         console.log(jwt_decode(data));
     }
 
     return (
-        <main className="App">
-            <>
-                <form onSubmit={handleSubmit}>
-                <label for="controlToken">Token</label>
+        <div>
+            <form onSubmit={handleSubmit}>
+                <label for="controlToken">Token </label>
                 <input
-                        type="text"
-                        className="form-control"
-                        name="controlToken"
-                        onChange={handleInput}
-                        placeholder="token" />
-                </form>
-                <button type="submit" className="btn btn-primary">Submit</button>
-
-            </>
-        </main>
+                    type="text"
+                    id="controlToken"
+                    className="form-control"
+                    onChange={handleInput}
+                    placeholder="token" />
+                <button type="submit"> Submit </button>
+            </form>
+        </div>
     )
 }
