@@ -1,5 +1,4 @@
 import './App.css';
-import jwt_decode from "jwt-decode";
 
 import Layout from "./components/Layout";
 import AdminPanel from "./views/AdminPanel";
@@ -8,6 +7,7 @@ import Login from "./views/Login";
 import Logout from "./views/Logout";
 import UserPanel from "./views/UserPanel";
 import Home from "./views/Home";
+import CheckToken from './views/CheckToken';
 
 import { LAYOUT, HOME, LOGIN, EDITOR, ADMIN_PANEL, USER_PANEL, LOGOUT } from './config/routes/paths';
 
@@ -18,6 +18,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path={LAYOUT} element={<Layout />}>
+          <Route index element={<CheckToken/>}/>
           <Route path={LOGIN} element={<Login />} />
           <Route path={HOME} element={<Home />} />
           <Route path={EDITOR} element={<Editor />} />
