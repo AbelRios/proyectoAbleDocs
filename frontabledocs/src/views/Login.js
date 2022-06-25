@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { useAuthContext } from "../contexts/AuthContext";
 import jwt_decode from "jwt-decode";
+import { useState, useEffect } from "react";
 import {Link as RouterLink, useNavigate} from "react-router-dom";
-import { LOGOUT, TEST_LINKS } from "../config/routes/paths";
+import { useAuthContext } from "../contexts/AuthContext";
+import { LOGOUT, TEST_LINKS, REGISTER, ADMIN_PANEL, USER_PANEL } from "../config/routes/paths";
+import {ADMIN, USER} from "../const/roles";
 
 
 export default function Login() {
@@ -43,10 +44,21 @@ export default function Login() {
 
             navigate(TEST_LINKS);
 
+            
+
         }catch(err){    
             console.log(err);
         }
     }
+
+    // useEffect(function(){
+
+    //     if(userInfo.roles.includes(ADMIN)){
+    //         navigate(ADMIN_PANEL);
+    //     }else {
+    //         navigate(USER_PANEL);
+    //     }
+    // }, [userInfo])
 
 
     return (
@@ -80,6 +92,8 @@ export default function Login() {
             <div className="col"></div>
         </div>
         <RouterLink to={LOGOUT}> Log Out </RouterLink>
+        <br></br>
+        <RouterLink to={REGISTER}> Crear Usuario Nuevo </RouterLink>
         </div>
     )
 }
