@@ -1,7 +1,10 @@
 export const LAYOUT = "/"
-export const HOME = "/home"
+export const REGISTER = "/register";
 export const LOGIN = "/login"
 export const EDITOR = "/editor"
 export const LOGOUT = "/logout"
 export const ADMIN_PANEL = "/admin"
 export const USER_PANEL = "/user"
+export const UNAUTHORIZED = "/unauthorized"
+export const MISSING = "*"
+export const TEST_LINKS = "/testlinks"

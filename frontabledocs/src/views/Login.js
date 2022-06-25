@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { useAuthContext } from "../contexts/AuthContext";
 import jwt_decode from "jwt-decode";
-import {Link as RouterLink} from "react-router-dom";
-import { LOGOUT } from "../config/routes/paths";
+import {Link as RouterLink, useNavigate} from "react-router-dom";
+import { LOGOUT, TEST_LINKS } from "../config/routes/paths";
 
 
 export default function Login() {
 
-    const {setUserInfo} = useAuthContext();
+    const navigate = useNavigate();
+
+    const {userInfo, setUserInfo} = useAuthContext();
 
     const [userLogin, setUserLogin] = useState({
         email:"",
@@ -35,10 +37,11 @@ export default function Login() {
 
             const data = await response.json();
 
-            window.localStorage.setItem("MY_AUTH_APP", data.token);
+            window.localStorage.setItem("AUTH_TKN", data.token);
             console.log(data);
             setUserInfo(jwt_decode(data.token));
 
+            navigate(TEST_LINKS);
 
         }catch(err){    
             console.log(err);

@@ -6,7 +6,7 @@ export default function Logout(){
 
     function logout(){
         setUserInfo({});
-        window.localStorage.removeItem("MY_AUTH_APP");
+        window.localStorage.removeItem("AUTH_TKN");
     }
 
     return(

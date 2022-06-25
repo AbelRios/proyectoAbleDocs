@@ -10,7 +10,7 @@ const AuthContext = createContext({
 
 export default function AuthContextProvider({ children }){
 
-    let token = window.localStorage.getItem("MY_AUTH_APP");
+    let token = window.localStorage.getItem("AUTH_TKN");
 
     const [userInfo, setUserInfo] = useState( token ? jwt_decode(token) : null);
 
