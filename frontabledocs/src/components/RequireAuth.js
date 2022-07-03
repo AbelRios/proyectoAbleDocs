@@ -2,7 +2,6 @@ import { useLocation, Navigate, Outlet } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
 import { LOGIN, UNAUTHORIZED } from '../config/routes/paths';
 
-
 export default function RequireAuth({ allowedRoles }) {
 
     const location = useLocation();

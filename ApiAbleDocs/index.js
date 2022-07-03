@@ -21,11 +21,16 @@ MongoClient.connect("mongodb://localhost:27017/", (err, client) => {
 
 //  <------------- Datos Auxiliares para la API ------------->
 
-const baseNotification = {
-
+class Notification {
+    constructor(from, date, message){
+        this.from = from;
+        this.date = date;
+        this.message = message;
+    }
 }
 
-
+const baseNotification = new Notification("Equipo de AbleDocs", "Hace 5 minutos", 
+    "Bienvenido a AbleDocs, tu programa de edición de contratos de confianza.");
 
 //  <------------- Funciones Auxiliares para la API ------------->
 
@@ -61,6 +66,20 @@ function idToken(token) {
     return decoded.id;
 }
 
+// Función que clona un objeto (template)
+function deepClone(object){
+    let clone = {};
+    for (let key in object){
+        let value = object[key];
+        if(typeof value != 'object') {
+            clone[key] = value;
+        } else {
+            clone[key] = deepClone(value);
+        }
+    }
+    return clone;
+}
+
 //  <------------- Endpoints de la API ------------->
 
 //  Endpoint para: creación de nuevo usuario
@@ -73,8 +92,9 @@ app.post("/newuser", async function (request, response) {
     let database = db.db("bdabledocs");
 
     request.body.roles = [1984];
+    request.body.notifications = [baseNotification];
+    request.body.avatar = "https://joeschmoe.io/api/v1/"+request.body.name;
 
-    // Aquí insertar notificación base
 
     md5.string.quiet(request.body.password, function (err, md5) {
         if (err) {
@@ -97,6 +117,24 @@ app.post("/newuser", async function (request, response) {
         response.status(400).send("Email not valid");
     }
 });
+
+//  Endpoint para: GET de un usuario
+//  Parametros necesarios:  id del usuario por params
+//  Observaciones:
+
+app.get("/user/:id", async function (request, response){
+
+    let database = db.db("bdabledocs");
+
+    await database.collection("users").findOne({_id: {$eq: ObjectId(request.params.id)}}, async function (err, result) {
+        if (!result) {
+            response.status(404).send("User does not exist.");
+        } else {
+            response.status(200).send(result);
+        }
+    })
+});
+
 
 //  Endpoint para: eliminar usuario existente
 //  Parametros necesarios: ObjectId del usuario
@@ -148,9 +186,14 @@ app.post("/login", async function (request, response) {
                         response.status(404).send("User does not exist.");
                     } else {
                         if (request.body.password === result.password) {
-                            const accessToken = jwt.sign({ id: result._id, name: result.name, roles: result.roles }, "releevant", { expiresIn: '6h' });
+
+                            const accessToken = jwt.sign({ id: result._id, name: result.name, 
+                                roles: result.roles, email: result.email, notifications: result.notifications }, 
+                                "releevant", { expiresIn: '6h' });
+
                             let token = {token: accessToken};
                             response.status(200).send(token);
+                            
                         } else {
                             response.status(401).send("Password not valid.")
                         }
@@ -244,8 +287,8 @@ app.post("/template", async function (request, response) {
     }
 });
 
-// Put necesita en el body los datos a modificar + el id de la template
-app.put("/template", async function (request, response) {
+// Put necesita en el body los datos a modificar + por params el id de la template
+app.put("/template/:id", async function (request, response) {
 
     let database = db.db("bdabledocs");
 
@@ -258,7 +301,7 @@ app.put("/template", async function (request, response) {
         if (isAdmin(authorization)) {
 
             await database.collection("templates").updateOne(
-                { _id: { $eq: ObjectId(request.body.id) } },
+                { _id: { $eq: ObjectId(request.params.id) } },
                 { $set: request.body },
                 function (err, res) {
                     if (!res) {
@@ -323,10 +366,16 @@ app.get("/document", async function (request, response) {
 
 });
 
-// Post necesita los campos del document en el body de la request
-// ***** Habrá que modificarlo, para que reciba el token del usuario e ingrese en el array de users ese id
-//       además, habrá que coger la template y copiarla y meterla en la propiedad template del document
-app.post("/document", async function (request, response) {
+// Post necesita el id del usuario y el objeto template en el body de la request
+// *** En el front habrá que hacer primero un get del template y pasarlo por el body
+app.post("/document/:idtemplate", async function (request, response) {
+
+    // Inicialización del body para crear el Nuevo Documento
+    request.body.title = "Nuevo Documento"; //
+    request.body.users.push("62a8a384b4bc932fe7640068"); 
+    request.body.state=1; 
+    request.body.lastUpdated=new Date();
+    request.body.data=[]; 
 
     let database = db.db("bdabledocs");
 
@@ -339,13 +388,14 @@ app.post("/document", async function (request, response) {
     })
 });
 
+// Este put necesita por el body los datos del documento y por params la id del documento
 //Aqui habría que chequear que el usuario que está modificando el document sea uno de los que tienen el doc asignado
-app.put("/document", async function (request, response) {
+app.put("/document/:id", async function (request, response) {
 
     let database = db.db("bdabledocs");
 
     await database.collection("documents").updateOne(
-        { _id: { $eq: ObjectId(request.body.id) } },
+        { _id: { $eq: ObjectId(request.params.id) } },
         { $set: request.body },
         function (err, res) {
             if (!res) {
@@ -385,11 +435,11 @@ app.delete("/document", async function (request, response) {
 //  Parametros necesarios:  id del usuario
 //  Observaciones:
 
-app.get("/listdocumentsuser", async function (request, response) {
+app.get("/listdocumentsuser/:id", async function (request, response) {
 
     let database = db.db("bdabledocs");
 
-    await database.collection("documents").find({ users: request.body.id }).toArray((err, results) => {
+    await database.collection("documents").find({ users: request.params.id }).toArray((err, results) => {
         if (!results) {
             response.status(404).send("No documents assigned to user")
         } else {
@@ -398,7 +448,8 @@ app.get("/listdocumentsuser", async function (request, response) {
     });
 });
 
-//  Endpoint para: listar las templates    
+
+//  Endpoint para: listar las templates     
 //  Parametros necesarios: 
 //  Observaciones:
 
@@ -407,6 +458,23 @@ app.get("/listalltemplates", async function (request, response) {
     let database = db.db("bdabledocs");
 
     await database.collection("templates").find().toArray((err, res) => {
+        if (!res) {
+            response.status(404).send("There is no templates")
+        } else {
+            response.status(200).send(res);
+        }
+    });
+});
+
+//  Endpoint para: listar los documentos "para revisar"
+//  Parametros necesarios: 
+//  Observaciones:
+
+app.get("/listdocstolookover", async function (request, response) {
+
+    let database = db.db("bdabledocs");
+
+    await database.collection("documents").find({ state: {$eq: "Para revisar" }}).toArray((err, res) => {
         if (!res) {
             response.status(404).send("There is no templates")
         } else {
@@ -471,7 +539,7 @@ app.put("/statelookover", async function (request, response) {
             } else {
                 let aux = result;
 
-                aux.state="Para revisar";
+                aux.state=2;
 
                 database.collection("documents").updateOne(
                     { _id: { $eq: ObjectId(request.body.idDocument) } },
@@ -508,7 +576,7 @@ app.put("/stateapproved", async function (request, response){
                     } else {
                         let aux = result;
 
-                        aux.state="Aprobado";
+                        aux.state=3;
 
                         database.collection("documents").updateOne(
                             { _id: { $eq: ObjectId(request.body.idDocument) } },
@@ -568,15 +636,6 @@ app.put("/stateapproved", async function (request, response){
 //         }
 // });
 
-// app.put("/clausula", async function (request, response){
-
-//     let database = db.db("bdabledocs");
-// });
-
-// app.delete("/clausula", async function (request, response){
-
-//     let database = db.db("bdabledocs");
-// });
 
 
 // ** NOTA ** Un endpoint es la URL o ruta, pero puede tener distintos métodos (get, post, put, delete) con distintas

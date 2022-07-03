@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans&display=swap');
+
+$font-family-sans-serif:'Plus Jakarta Sans';
+$font-family-monospace:'Plus Jakarta Sans';
+$primary: #14213D;
+$success: #45C3A5;
+$secondary: #7184D1;
+$light: #bdbdbd;
+
+
+// import bootstrap
+@import "../node_modules/bootstrap/scss/bootstrap.scss";

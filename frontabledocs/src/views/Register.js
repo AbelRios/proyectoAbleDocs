@@ -1,6 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { LOGIN } from "../config/routes/paths";
 
 export default function Register() {
+
+    const navigate = useNavigate();
 
     const [user, setUser] = useState({
         name: "",
@@ -29,44 +33,53 @@ export default function Register() {
         e.preventDefault();
         console.log(user);
         await postApi();
+
+        navigate(LOGIN);
     }
 
     return (
-        <div className="container">
-            <h1 className="m-3"> Registro de Nuevo Usuario </h1>
-            <form onSubmit={handleSubmit}>
-                <div className="form-floating mb-3">
-                    <input
-                        type="email"
-                        className="form-control mb-3"
-                        id="floatingEmail"
-                        name="email"
-                        onChange={handleInput}
-                        placeholder="name@example.com" />
-                    <label for="floatingEmail">Email address</label>
+        <div className="container pt-5">
+            <div className="row ">
+            <div className="col"></div>
+                <div className="col-5 align-self-center">
+                    <h1 className="mb-3"> Registro de Nuevo Usuario </h1>
+                    <p>Por favor, ingresa un nombre de usuario, email y contraseña válidos.</p>
+                    <form className="mt-3" onSubmit={handleSubmit}>
+                    <div className="form-floating mb-3">
+                            <input
+                                type="text"
+                                className="form-control mb-3"
+                                id="floatingName"
+                                name="name"
+                                onChange={handleInput}
+                                placeholder="Nombre de Usuario" />
+                            <label for="floatingName">Nombre de Usuario</label>
+                        </div>
+                        <div className="form-floating mb-3">
+                            <input
+                                type="email"
+                                className="form-control mb-3"
+                                id="floatingEmail"
+                                name="email"
+                                onChange={handleInput}
+                                placeholder="name@example.com" />
+                            <label for="floatingEmail">Email </label>
+                        </div>
+                        <div className="form-floating">
+                            <input
+                                type="password"
+                                className="form-control"
+                                id="floatingPassword"
+                                name="password"
+                                onChange={handleInput}
+                                placeholder="Password" />
+                            <label for="floatingPassword">Contraseña</label>
+                        </div>
+                        <button type="submit" className="btn btn-primary mt-3"> Registrar </button>
+                    </form>
                 </div>
-                <div className="form-floating mb-3">
-                    <input
-                        type="text"
-                        className="form-control mb-3"
-                        id="floatingName"
-                        name="name"
-                        onChange={handleInput}
-                        placeholder="Nombre de Usuario" />
-                    <label for="floatingName">Nombre de Usuario</label>
-                </div>
-                <div className="form-floating">
-                    <input
-                        type="password"
-                        className="form-control"
-                        id="floatingPassword"
-                        name="password"
-                        onChange={handleInput}
-                        placeholder="Password" />
-                    <label for="floatingPassword">Password</label>
-                </div>
-                <button type="submit" className="btn btn-primary mt-3"> Registrar </button>
-            </form>
+                <div className="col"></div>
+            </div>
         </div>
     )
 }
