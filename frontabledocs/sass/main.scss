@@ -5,8 +5,25 @@ $font-family-monospace:'Plus Jakarta Sans';
 $primary: #14213D;
 $success: #45C3A5;
 $secondary: #7184D1;
-$light: #bdbdbd;
+$light: #cccccc;
+$warning: #f48200;
+
+.card-footer{
+    background-color: white !important;
+}
 
 
 // import bootstrap
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
+
+// Asi con la función de JS de window.print sólo imprimirá lo que haya dentro del div con id "documento"
+@media only print{
+    .noprint {
+        display: none;
+    }
+    .documento{
+        width: auto;
+        height: auto;
+        display: inline-block;
+    }
+}

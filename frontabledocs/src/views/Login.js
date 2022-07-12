@@ -2,14 +2,14 @@ import jwt_decode from "jwt-decode";
 import { useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
-import { TEST_LINKS, REGISTER, USER_PANEL } from "../config/routes/paths";
+import { REGISTER, USER_PANEL } from "../config/routes/paths";
 
 
 export default function Login() {
 
     const navigate = useNavigate();
 
-    const { userInfo, setUserInfo } = useAuthContext();
+    const { setUserInfo } = useAuthContext();
 
     const [userLogin, setUserLogin] = useState({
         email: "",
@@ -25,7 +25,7 @@ export default function Login() {
 
     async function handleSubmit(e) {
         e.preventDefault();
-        
+
         try {
             let requestOptions = {
                 method: 'POST',
@@ -41,23 +41,22 @@ export default function Login() {
 
             setUserInfo(jwt_decode(data.token));
 
-            navigate(TEST_LINKS);
+            navigate(USER_PANEL);
             // esto cambiará al userpanel
 
         } catch (err) {
             console.log(err);
         }
 
-        
+
     }
 
     return (
         <div className="container">
-            <div className="row">
-                <div className="col"></div>
-                <div className="col-5">
-                    <h1 className="mt-5"><i className="bi bi-clipboard"></i><b>Able</b>Docs</h1>
-                    <h2 className="mt-5 mb-3"> Login </h2>
+            <div className="row justify-content-center">
+                <div className="col-5 mt-5">
+                    <h1 className="text-center"><i className="bi bi-clipboard"></i><b> Able</b>Docs</h1>
+                    <h2 className="text-center mt-5 mb-3"> Login </h2>
                     <form onSubmit={handleSubmit}>
                         <div className="mb-3">
                             <label htmlFor="inputEmail1" className="form-label">Email </label>
@@ -77,13 +76,14 @@ export default function Login() {
                                 onChange={handleInput}
                                 name="password" />
                         </div>
-                        <button type="submit" className="btn btn-primary">Iniciar Sesión</button>
+                        <div className="text-center">
+                            <button type="submit" className="btn btn-primary">Iniciar Sesión</button>
+                        </div>
                     </form>
+                    <br></br>
+                    <p className="text-center">¿Aún no tienes cuenta? Regístrate aquí: <RouterLink to={REGISTER}> Crear cuenta </RouterLink></p>
                 </div>
-                <div className="col"></div>
             </div>
-            <br></br>
-            <p>¿Aún no tienes cuenta? Regístrate aquí: <RouterLink to={REGISTER}> Crear cuenta </RouterLink></p>
         </div>
     )
 }

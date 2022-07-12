@@ -1,140 +1,64 @@
-[{
-  "_id": {
-    "$oid": "62ab2497edeaa075a91b97d5"
-  },
-  "title": "Titulo Prueba",
-  "users": [
-    "62a8a384b4bc932fe7640068",
-    "62a9e5af4d16506c55eeafbe",
-    "62ab1a7ab0d1f8b7cee3db08"
-  ],
-  "state": "En proceso",
-  "data": [
-    "dato1",
-    "dato2",
-    "dato3"
-  ],
-  "template": {
-    "_id": "",
-    "title": "template prueba doc",
-    "text": "esto es un text de prueba de doc",
-    "values": [
-      "valor1",
-      "valor2"
-    ],
-    "extras": [
-      "clausula1",
-      "clausula2"
-    ]
-  },
-  "id": "62ab2497edeaa075a91b97d5"
-},{
-  "_id": {
-    "$oid": "62ab392e7b34a367bb9d7d3d"
-  },
-  "title": "Documento Prueba Crear",
-  "users": [
-    "62a8a384b4bc932fe7640068",
-    "62a9e5af4d16506c55eeafbe"
-  ],
-  "state": "Aprobado",
-  "data": [
-    "dato1",
-    "dato2",
-    "dato3"
-  ],
-  "template": {
-    "_id": "",
-    "title": "template prueba doc",
-    "text": "esto es un text de prueba de doc",
-    "values": [
-      "valor1",
-      "valor2"
-    ],
-    "extras": [
-      "clausula1",
-      "clausula2"
-    ]
-  }
-},{
-  "_id": {
-    "$oid": "62ab3c3cc95a2a5de0264146"
-  },
-  "title": "Documento Prueba 1",
-  "users": [
-    "62a8a384b4bc932fe7640068"
-  ],
-  "state": "En proceso",
-  "data": [
-    "dato1",
-    "dato2",
-    "dato3"
-  ],
-  "template": {
-    "_id": "",
-    "title": "template prueba doc",
-    "text": "esto es un text de prueba de doc",
-    "values": [
-      "valor1",
-      "valor2"
-    ],
-    "extras": [
-      "clausula1",
-      "clausula2"
-    ]
-  }
-},{
-  "_id": {
-    "$oid": "62ab3c40c95a2a5de0264147"
-  },
-  "title": "Documento Prueba 2",
-  "users": [
-    "62a8a384b4bc932fe7640068"
-  ],
-  "state": "En proceso",
-  "data": [
-    "dato1",
-    "dato2",
-    "dato3"
-  ],
-  "template": {
-    "_id": "",
-    "title": "template prueba doc",
-    "text": "esto es un text de prueba de doc",
-    "values": [
-      "valor1",
-      "valor2"
-    ],
-    "extras": [
-      "clausula1",
-      "clausula2"
-    ]
-  }
-},{
-  "_id": {
-    "$oid": "62ab3c43c95a2a5de0264148"
-  },
-  "title": "Documento Prueba 3",
-  "users": [
-    "62a8a384b4bc932fe7640068"
-  ],
-  "state": "En proceso",
-  "data": [
-    "dato1",
-    "dato2",
-    "dato3"
-  ],
-  "template": {
-    "_id": "",
-    "title": "template prueba doc",
-    "text": "esto es un text de prueba de doc",
-    "values": [
-      "valor1",
-      "valor2"
-    ],
-    "extras": [
-      "clausula1",
-      "clausula2"
-    ]
-  }
-}]
+[
+  {
+    "title": "Documento de Testeo",
+    "type": "Contrato de Compraventa de Inmueble",
+    "state": 1,
+    "users": ["62c6d73f202a1593cbb40232", "62c6fa03202a1593cbb40236"],
+    "valores": {
+        "lugar": "Málaga",
+        "fecha": "Fecha De Prueba",
+        "nombreVendedor": "Vendedor",
+        "dniVendedor": "00000000",
+        "estadoCivilVendedor": "casado",
+        "domicilioVendedor": "C/VENDEDOR",
+        "nombreComprador": "Comprador",
+        "dniComprador": "88888888",
+        "estadoCivilComprador": "soltero",
+        "domicilioComprador": "C/COMPRADOR",
+        "direccionInmueble": "C/COMPRAVENTA",
+        "superficieContstruida": "0000",
+        "superficieUtil": "1111",
+        "referenciaCatastral": "REFERENCIA",
+        "registroPropiedad": "REGISTRO PROPIEDAD",
+        "cargasGravamenes": "NO TIENE CARGAS NI GRAVAMENES",
+        "ocupantes": "NO TIENE OCUPANTES",
+        "precioEscrito": "VEINTE EUROS",
+        "precioNumero": "20",
+        "plazoPago": "7 días",
+        "senyal": "10",
+        "fechaLimite": "4 de Abril",
+        "precioMenosSenal": "DIEZ EUROS",
+        "precioMenosSenalNumero": "10",
+        "rangoFechaEscritura": "7 de junio y 15 de junio de 2022",
+        "juzgado": "el Juzgado de Torremolinos"
+    },
+    "labels": {
+        "lugar": "Lugar de Firma del Contrato",
+        "fecha": "Fecha de Firma del Contrato",
+        "nombreVendedor": "Nombre del Vendedor",
+        "dniVendedor": "DNI del Vendedor",
+        "estadoCivilVendedor": "Estado Civil del Vendedor",
+        "domicilioVendedor": "Domicilio del Vendedor",
+        "nombreComprador": "Nombre del Comprador",
+        "dniComprador": "DNI del Comprador",
+        "estadoCivilComprador": "Estado Civil del Comprador",
+        "domicilioComprador": "Domicilio del Comprador",
+        "direccionInmueble": "Dirección del Inmueble",
+        "superficieContstruida": "Superficie Construida del Inmueble",
+        "superficieUtil": "Superficie Útil del Inmueble",
+        "referenciaCatastral": "Referencia Catastral",
+        "registroPropiedad": "Registro de la Propiedad",
+        "cargasGravamenes": "¿Cargas o Gravámenes?",
+        "ocupantes": "¿Ocupantes del inmueble?",
+        "precioEscrito": "Precio de la compra (por escrito)",
+        "precioNumero": "Precio de la compra (en número)",
+        "plazoPago": "Plazo para el pago",
+        "senyal": "Cuantía de la señal",
+        "fechaLimite": "Fecha límite para el pago",
+        "precioMenosSenal": "Precio de la compra menos la señal (por escrito)",
+        "precioMenosSenalNumero": "Precio de la compra menos la señal (en número)",
+        "rangoFechaEscritura": "Rango de Fechas para firmar la Escritura",
+        "juzgado": "Juzgado en el que se registrá si hubiese algún problema"
+    }
+}
+]

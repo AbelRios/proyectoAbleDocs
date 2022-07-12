@@ -40,12 +40,13 @@ export default function Register() {
     return (
         <div className="container pt-5">
             <div className="row ">
-            <div className="col"></div>
+                <div className="col"></div>
                 <div className="col-5 align-self-center">
-                    <h1 className="mb-3"> Registro de Nuevo Usuario </h1>
+                    <h1 className="text-center"><i className="bi bi-clipboard"></i><b> Able</b>Docs</h1>
+                    <h2 className="text-center mt-3 mb-3"> Registro de Nuevo Usuario </h2>
                     <p>Por favor, ingresa un nombre de usuario, email y contraseña válidos.</p>
                     <form className="mt-3" onSubmit={handleSubmit}>
-                    <div className="form-floating mb-3">
+                        <div className="form-floating mb-3">
                             <input
                                 type="text"
                                 className="form-control mb-3"
@@ -75,7 +76,9 @@ export default function Register() {
                                 placeholder="Password" />
                             <label for="floatingPassword">Contraseña</label>
                         </div>
-                        <button type="submit" className="btn btn-primary mt-3"> Registrar </button>
+                        <div className="text-center">
+                            <button type="submit" className="btn btn-primary mt-3"> Registrar Usuario </button>
+                        </div>
                     </form>
                 </div>
                 <div className="col"></div>

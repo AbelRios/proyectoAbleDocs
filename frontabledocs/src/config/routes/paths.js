@@ -1,7 +1,7 @@
 export const LAYOUT = "/"
 export const REGISTER = "/register";
 export const LOGIN = "/login"
-export const EDITOR = "/editor"
+export const EDITOR = "/editor/:type/:id"
 export const LOGOUT = "/logout"
 export const ADMIN_PANEL = "/admin"
 export const USER_PANEL = "/user"
