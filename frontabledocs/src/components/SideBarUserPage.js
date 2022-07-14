@@ -55,10 +55,10 @@ export default function SideBarUserPage({ docPage, userInfo, usersList, lista })
                 style={{ height: "160vh", overflowY: "scroll" }}>
                 <div className="d-flex align-items-center justify-content-between">
                     <div className="d-flex align-items-center">
-                        <button classame="btn btn-outline-white">
-                            <img src={userInfo.avatar} className="rounded-circle shadow-4" style={{ width: "60px" }}
+                        {/* <button classame="btn btn-outline-white"> */}
+                            <img src={userInfo.avatar} className="rounded-circle shadow-4 cursor-pointer" style={{ width: "60px" }}
                                 alt="avatar" data-bs-toggle="modal" data-bs-target="#staticBackdrop" />
-                        </button>
+                        {/* </button> */}
                         <h5 className=" ps-2 m-0 fw-bold">Hola, {userInfo.name}</h5>
                     </div>
                     <button type="button" className="btn btn-outline-white"

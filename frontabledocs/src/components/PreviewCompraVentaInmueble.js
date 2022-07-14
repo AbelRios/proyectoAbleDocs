@@ -79,6 +79,11 @@ export default function PreviewCompraVentaInmueble({valores}) {
             <br></br>
             <br></br>
             <br></br>
+            {valores.firma2 ? 
+            <img src={valores.firma2} style={{maxHeight:"250px"}}></img> :
+            ""
+            }
+            <br></br>
             <p><span className='bg-secondary text-white rounded-pill px-2 py-1'>{valores.domicilioComprador}</span></p>
             <br></br>
             <p>7.2  Todas las notificaciones a que se hace referencia en el presente contrato o las que correspondiera realizar, deberán realizarse por escrito, y en la forma que se pueda acreditar su recepción y contenido.</p>
